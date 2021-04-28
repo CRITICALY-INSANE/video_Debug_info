@@ -7,7 +7,8 @@ import requests
 from threading import Thread as tt
 from bs4 import BeautifulSoup
 import re
-
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
 from pynput.mouse import Button, Controller
 import numpy as np
 import clipboard
@@ -90,7 +91,7 @@ def save_it(text):
 
 def run(string):
     global belna
-    ar='[@!#$%^&*()<>?/\|}{~:]'
+    ar='[@!#$%^&*()<>?/\|}{~":]'
     # Make own character set and pass 
     # this as argument in compile method
     regex = re.compile(ar)
@@ -111,8 +112,15 @@ def run(string):
         #print(str(regex.search(string).span()))
         run(string)
         
-        
-        
+def injector():
+##    global driver
+##    var mouseEvent = document.createEvent("MouseEvents");
+##    mouseEvent.initMouseEvent("contextmenu", true, true, null);
+##    $('.html5-video-player').dispatchEvent(mouseEvent);
+##    $('.ytp-popup.ytp-contextmenu').querySelector('.ytp-panel-menu').querySelectorAll('.ytp-menuitem')[4].click()
+##    
+##
+    pass
 def anchor():
     #resp=requests.get(x)
     global driver,nme,belna
@@ -123,15 +131,20 @@ def anchor():
     driver.maximize_window()
     #print(players)
     #keyboard.press(Key.alt)
-    time.sleep(2)
-    players.click()
+    preser()
+    action=ActionChains(driver)
+    action.context_click(players).perform()
+    time.sleep(10)
+    pl=driver.find_element_by_xpath("//*[contains(text(),'Copy debug info')]").click()
+    #players.click()
     
     nme=driver.find_element_by_xpath('//*[@id="container"]/h1/yt-formatted-string')
     nme=nme.text
     nme=run(nme)
     print("File Name = "+belna+'.txt')
     print()
-    preser()
+    
+    #driver.execute_script(injector())
     
     mouse.position = (350, 400)
     mouse.press(Button.right)
@@ -141,6 +154,7 @@ def anchor():
     #location=get_info(saved_image,search_img)
     #mouse.position = location[1],location[0]
     mouse.move(10,200)
+    time.sleep(1)
     mouse.press(Button.left)
     mouse.release(Button.left)
     time.sleep(3)
@@ -165,4 +179,5 @@ def anchor():
 
     
 strt()
+
 
